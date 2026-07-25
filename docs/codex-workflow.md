@@ -81,7 +81,17 @@ Do not regenerate or transform an existing asset after an interruption without f
 - When these disagree, identify the conflict instead of silently choosing or combining them.
 - Do not overwrite a deliberate design decision with a generic improvement.
 
-## 8. Handoff between threads
+## 8. FGDD and CGDD workflow
+
+- `docs/FGDD.md` defines the complete intended Google Play release: the game from A to Z when finished.
+- `docs/CGDD.md` records only the current verified game: implemented systems, content, assets, limitations, and validation status.
+- The long-term goal is for the CGDD to contain the same approved scope as the FGDD when the release is complete.
+- The FGDD is not copied directly into code. Each approved FGDD feature is decomposed into bounded technical tasks, data, assets, interfaces, acceptance criteria, and tests.
+- After implementation and verification, update the matching CGDD section. Do not describe planned or partially built work as complete.
+- Every development task should identify its FGDD target, current CGDD state, implementation gap, changed files, and verification result.
+- When implementation proves an FGDD decision infeasible or weak, report the conflict and obtain approval before changing the FGDD.
+
+## 9. Handoff between threads
 
 Use `docs/active-work.md` as the compact persistent handoff. Update it after a meaningful completed milestone or before leaving an unstable thread.
 
@@ -94,7 +104,7 @@ A new thread should normally need only:
 
 Avoid copying entire previous conversations into the repository.
 
-## 9. Git completion
+## 10. Git completion
 
 Before committing stable work:
 
