@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>The Purple Sea</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; overflow: hidden; }
+    canvas { display: block; touch-action: none; }
+  </style>
+</head>
+<body>
+
+<script src="phaser.min.js"></script>
+<script src="js/SettingsPanel.js"></script>
+<script src="js/NPCSystem.js"></script>
+<script src="js/data.js"></script>
+<script src="js/SaveSystem.js"></script>
+<script src="js/locations/kefr_yamm.js"></script>
+<script src="js/locations/tyre.js"></script>
+<script src="js/LocationRegistry.js"></script>
+<script src="js/BootScene.js"></script>
+<script src="js/MenuScene.js"></script>
+<script src="js/WorldScene.js"></script>
+<script src="js/LocationHubScene.js"></script>
+<script src="js/LocationMapScene.js"></script>
+<script src="js/TradeScene.js"></script>
+<script src="js/JournalScene.js"></script>
+
+<script>
+const config = {
+  type: Phaser.AUTO,
+  width: window.innerWidth,
+  height: window.innerHeight,
+  backgroundColor: '#050518',
+  physics: {
+    default: 'arcade',
+    arcade: { gravity: { y: 0 }, debug: false }
+  },
+  scene: [BootScene, MenuScene, WorldScene, LocationHubScene, LocationMapScene, TradeScene, JournalScene],
+  scale: {
+    mode: Phaser.Scale.NONE,
+    autoCenter: Phaser.Scale.CENTER_BOTH
+  }
+};
+
+const game = new Phaser.Game(config);
+</script>
+
+</body>
+</html>
