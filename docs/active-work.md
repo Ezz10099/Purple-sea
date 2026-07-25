@@ -12,6 +12,7 @@ This file preserves the minimum project context needed when a development thread
 
 - Process rules: `AGENTS.md`.
 - Execution and handoff workflow: `docs/codex-workflow.md`.
+- Approved universal, deferred, and excluded workflow rules: `docs/workflow-decisions.md`.
 - Project risks, limitations, triggers, mitigations, and stop conditions: `docs/risk-register.md`.
 - Final intended release: `docs/FGDD.md`.
 - Current verified game state: `docs/CGDD.md`.
@@ -29,6 +30,7 @@ This file preserves the minimum project context needed when a development thread
 - Approved source data must be preserved rather than simplified or rewritten during implementation unless explicitly requested.
 - The FGDD defines the approved final release target; the CGDD records only verified current implementation.
 - Every meaningful work package must identify and control relevant risks and limitations.
+- Purple Sea keeps Arcane Academy's universal development discipline, defers architecture-dependent rules, and excludes Arcane-specific product details.
 
 ## Recently completed
 
@@ -39,6 +41,7 @@ This file preserves the minimum project context needed when a development thread
 - Integrated the FGDD-to-CGDD development model into the workflow.
 - Added `docs/risk-register.md` covering planning, architecture, implementation, assets, integration, testing, security, Google Play release, and post-launch risks.
 - Integrated risk identification, classification, mitigation, escalation, and closure into the main workflow.
+- Added `docs/workflow-decisions.md` to preserve the agreed keep/defer/exclude split.
 
 ## Current repository state
 
