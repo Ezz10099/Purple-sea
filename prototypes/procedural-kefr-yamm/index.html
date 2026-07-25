@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07131b" />
+  <title>Purple Sea — Procedural Diorama Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app-shell" aria-label="Purple Sea procedural terrain prototype">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PROCEDURAL TERRAIN TEST</p>
+        <h1>Kefr-Yamm</h1>
+      </div>
+      <div class="resource" aria-label="Silver balance">
+        <span class="coin" aria-hidden="true"></span>
+        <strong>40</strong>
+      </div>
+    </header>
+
+    <section class="viewport" aria-label="Interactive isometric terrain">
+      <canvas id="game" width="480" height="760"></canvas>
+      <div class="scene-label">Village of the Sea</div>
+      <div class="hint" id="hint">Tap an enemy encounter</div>
+    </section>
+
+    <section class="encounter-card" id="encounterCard" aria-live="polite">
+      <div class="enemy-medallion" id="enemyMedallion">?</div>
+      <div class="encounter-copy">
+        <p class="eyebrow" id="enemyType">COASTAL ENCOUNTER</p>
+        <h2 id="enemyName">Choose an enemy</h2>
+        <p id="enemyDescription">Stationary encounters keep movement simple while the terrain carries the visual identity.</p>
+      </div>
+      <button id="challengeButton" type="button" disabled>Challenge</button>
+    </section>
+
+    <nav class="controls" aria-label="Prototype controls">
+      <button id="lightingButton" type="button">Dusk lighting</button>
+      <button id="detailButton" type="button">Reduce detail</button>
+      <button id="resetButton" type="button">Reset view</button>
+    </nav>
+
+    <dialog id="battleDialog">
+      <div class="dialog-panel">
+        <p class="eyebrow">PROTOTYPE RESULT</p>
+        <h2 id="battleTitle">Encounter started</h2>
+        <p>This test proves terrain, architecture, water, shadows, enemy markers and interaction can be produced without imported artwork or a desktop engine.</p>
+        <button id="closeDialog" type="button">Return to terrain</button>
+      </div>
+    </dialog>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
