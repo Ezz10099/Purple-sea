@@ -25,6 +25,8 @@
 <script src="js/WorldScene.js"></script>
 <script src="js/LocationHubScene.js"></script>
 <script src="js/LocationMapScene.js"></script>
+<script src="js/ForestScene.js"></script>
+<script src="js/ForestIntegration.js"></script>
 <script src="js/TradeScene.js"></script>
 <script src="js/JournalScene.js"></script>
 
@@ -38,7 +40,7 @@ const config = {
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false }
   },
-  scene: [BootScene, MenuScene, WorldScene, LocationHubScene, LocationMapScene, TradeScene, JournalScene],
+  scene: [BootScene, MenuScene, WorldScene, LocationHubScene, LocationMapScene, ForestScene, TradeScene, JournalScene],
   scale: {
     mode: Phaser.Scale.NONE,
     autoCenter: Phaser.Scale.CENTER_BOTH
