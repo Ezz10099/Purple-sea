@@ -225,7 +225,7 @@
       item.visibilityMarker.setScale(selected ? 1.24 : 1);
       item.visibilityMarker.setAlpha(selected ? 1 : 0.82);
       if (item.def.kind === 'jackal' && item.alive && this.time.now >= item.jackalPoseUntil) {
-        this.setJackalState(item, selected ? 'alert' : 'idle');
+        this.setJackalState(item, 'idle');
       }
     });
   };
@@ -425,15 +425,7 @@
       if (!enemy.alive || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
       enemy.bodyArt.setFlipX(this.player.x < enemy.x);
       if (time < enemy.jackalPoseUntil) return;
-
-      const distance = Phaser.Math.Distance.Between(
-        this.player.x,
-        this.player.y,
-        enemy.x,
-        enemy.y
-      );
-      const desiredState = enemy === this.selectedEnemy || distance < 150 ? 'alert' : 'idle';
-      this.setJackalState(enemy, desiredState);
+      this.setJackalState(enemy, 'idle');
     });
   };
 
