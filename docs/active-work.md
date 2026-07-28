@@ -6,7 +6,7 @@ This file preserves the minimum project context needed when a development thread
 
 - Project: Purple Sea.
 - Immediate goal: establish the repository foundation, then build the first playable vertical slice around Kefr-Yamm.
-- Current work package: design, workflow, and risk-control foundation.
+- Current work package: integrate the approved provisional jackal enemy into Weakwood Grove.
 
 ## Source of truth
 
@@ -42,25 +42,30 @@ This file preserves the minimum project context needed when a development thread
 - Added `docs/risk-register.md` covering planning, architecture, implementation, assets, integration, testing, security, Google Play release, and post-launch risks.
 - Integrated risk identification, classification, mitigation, escalation, and closure into the main workflow.
 - Added `docs/workflow-decisions.md` to preserve the agreed keep/defer/exclude split.
+- Added a playable Phaser 3.60 prototype with Kefr-Yamm, location travel, trade, and Weakwood Grove.
+- Replaced Weakwood Grove's temporary procedural jackal with the approved provisional Direction A seven-frame pixel-art set.
+- Added Phaser idle, alert, attack, hurt, defeated, and respawn presentation for both Weakwood jackals.
+- Added the validated minimal jackal package under `assets/enemies/jackal/`.
 
 ## Current repository state
 
-- The repository contains workflow and design-document foundations only.
-- No engine, framework, package manager, runtime architecture, or playable implementation has been selected or committed yet.
-- No validation or preview commands exist yet.
-- The FGDD and CGDD are intentionally empty.
+- The repository contains a browser-hosted Phaser 3.60 playable prototype.
+- Weakwood Grove contains two jackal encounters using the approved provisional asset set.
+- Asset validation, JavaScript syntax checks, and a focused Phaser-state harness pass.
+- Cloud localhost preview was blocked, so final jackal appearance and timing still require SPCK or real-browser/device verification.
+- The FGDD is still empty; the CGDD records the verified jackal integration and its remaining limitation.
 
 ## Highest current risks
 
 - Final scope is undefined because the FGDD is empty.
-- No runtime exists, so the CGDD cannot yet describe a playable game.
-- Engine, framework, Android architecture, save strategy, and content pipeline are unresolved.
-- Kefr-Yamm source data is not yet committed to the repository.
-- Fun, pacing, economy, usability, performance, and device compatibility are untested.
+- The current browser prototype has not yet established the final Android architecture or content pipeline.
+- Authoritative location source data and the current runtime files have not yet received a full alignment audit.
+- Jackal readability, timing, performance, and interaction feel remain unverified on the user's target phone.
+- Fun, pacing, economy, usability, performance, and broader device compatibility remain insufficiently tested.
 
 ## Recommended next bounded step
 
-Commit the supplied Kefr-Yamm data into a stable repository path, validate its JSON structure, then begin defining the FGDD structure and architecture requirements without prematurely selecting an implementation stack.
+Pull the jackal integration into SPCK, enter Weakwood Grove, and verify idle, selection alert, retaliation impact, hurt, defeat, respawn, scale, UI overlap, and crisp nearest-neighbour rendering on the target phone.
 
 ## Next-task template
 

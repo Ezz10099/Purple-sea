@@ -302,10 +302,10 @@ Stop the current work package and report before continuing when:
 | Risk | Likelihood | Impact | Current response |
 |---|---|---|---|
 | FGDD is empty, so final scope is undefined | High | Critical | Define and approve it incrementally before broad implementation |
-| CGDD is empty and no runtime exists | High | High | Add only verified repository state and future proven milestones |
-| Engine, framework, and Android architecture are unselected | High | Critical | Compare requirements and prototype before committing |
-| Kefr-Yamm source data is not yet committed to the repository | High | High | Preserve and validate it as authoritative data |
-| No automated checks, preview workflow, or device evidence exists | High | High | Establish validation with the first technical foundation |
+| Runtime implementation can outpace CGDD evidence | Medium | High | Record only verified milestones and their unresolved limitations |
+| Phaser is used by the browser prototype, but the final Android architecture is unresolved | High | Critical | Validate requirements and the target-device pipeline before locking release architecture |
+| Authoritative location source data may drift from runtime files | Medium | High | Audit and preserve source-to-runtime alignment before broad content expansion |
+| Automated checks are partial and target-device preview evidence is missing | High | High | Add repeatable checks and verify visible changes in SPCK or on the target phone |
 | Fun, pacing, economy, and usability are untested | High | Critical | Build and test a representative vertical slice before scaling content |
 | Historical accuracy boundaries are undefined | Medium | High | Define evidence, reconstruction, and fiction labels in the FGDD |
 | Google Play account and testing-track constraints are unverified | Medium | High | Check current requirements before release planning |
