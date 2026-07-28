@@ -194,15 +194,17 @@
     const scale = isJackal ? 1 : def.kind === 'crawler' ? 0.78 : 0.82;
     enemy.bodyArt.setScale(scale);
 
-    const outline = (isJackal
-      ? this.add.sprite(enemy.bodyArt.x, enemy.bodyArt.y, def.texture, JACKAL_FRAME.IDLE_A)
-      : this.add.image(enemy.bodyArt.x, enemy.bodyArt.y, def.texture))
-      .setOrigin(enemy.bodyArt.originX, enemy.bodyArt.originY)
-      .setScale(scale * (isJackal ? 1.06 : 1.08))
-      .setTintFill(0xf4ddb0)
-      .setAlpha(isJackal ? 0.22 : 0.28);
-    enemy.addAt(outline, 1);
-    enemy.outlineArt = outline;
+    if (!isJackal) {
+      const outline = this.add.image(enemy.bodyArt.x, enemy.bodyArt.y, def.texture)
+        .setOrigin(enemy.bodyArt.originX, enemy.bodyArt.originY)
+        .setScale(scale * 1.08)
+        .setTintFill(0xf4ddb0)
+        .setAlpha(0.28);
+      enemy.addAt(outline, 1);
+      enemy.outlineArt = outline;
+    } else {
+      enemy.outlineArt = null;
+    }
 
     enemy.setSize(isJackal ? 112 : 96, 104);
 
