@@ -242,13 +242,12 @@
       targets: body,
       x: { from: 0, to: recoilX },
       angle: { from: 0, to: body.flipX ? -4 : 4 },
-      alpha: { from: 0.62, to: 1 },
       duration: 70,
       yoyo: true,
       ease: 'Quad.Out',
       onComplete: () => {
         if (enemy.jackalActionToken !== token) return;
-        body.clearTint().setX(0).setAngle(0).setAlpha(1);
+        body.clearTint().setX(0).setAngle(0);
       }
     });
   };
@@ -358,7 +357,6 @@
         this.floatText(this.player.x, this.player.y - 56, `-${retaliation}`, '#ffad91');
         this.tweens.add({
           targets: this.player.bodyArt,
-          alpha: 0.42,
           angle: enemy.x > this.player.x ? -6 : 6,
           duration: 75,
           yoyo: true
@@ -397,7 +395,6 @@
         if (enemy.alive) return;
         this.tweens.add({
           targets: enemy,
-          alpha: 0,
           scaleX: 0.88,
           scaleY: 0.88,
           y: enemy.homeY + 4,
@@ -412,6 +409,15 @@
   ForestScene.prototype.respawnEnemy = function respawnAnimatedEnemy(enemy) {
     originalRespawnEnemy.call(this, enemy);
     if (enemy.def.kind !== 'jackal') return;
+    this.tweens.killTweensOf(enemy);
+    enemy.setAlpha(1);
+    this.tweens.add({
+      targets: enemy,
+      scaleX: { from: 0.75, to: 1 },
+      scaleY: { from: 0.75, to: 1 },
+      duration: 420,
+      ease: 'Back.Out'
+    });
     ++enemy.jackalActionToken;
     enemy.jackalPoseUntil = 0;
     enemy.jackalState = '';
