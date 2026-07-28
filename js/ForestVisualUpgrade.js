@@ -42,7 +42,7 @@
         frames: this.anims.generateFrameNumbers(JACKAL_TEXTURE, {
           frames: [JACKAL_FRAME.IDLE_A, JACKAL_FRAME.IDLE_B]
         }),
-        frameRate: 1.6,
+        frameRate: 0.8,
         repeat: -1,
         yoyo: true
       });
@@ -149,22 +149,6 @@
     enemy.jackalState = state;
   };
 
-  ForestScene.prototype.startJackalBreathing = function startJackalBreathing(enemy, index) {
-    if (!enemy || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
-    if (enemy.jackalBreathTween) enemy.jackalBreathTween.stop();
-    this.tweens.killTweensOf(enemy.bodyArt);
-    enemy.bodyArt.setPosition(0, 5).setScale(1);
-    enemy.jackalBreathTween = this.tweens.add({
-      targets: enemy.bodyArt,
-      y: { from: 5, to: 3 },
-      scaleY: { from: 1, to: 1.018 },
-      duration: 1050 + index * 80,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.InOut'
-    });
-  };
-
   ForestScene.prototype.createEnemies = function createReadableEnemies() {
     this.enemies = [];
     const defs = [
@@ -221,7 +205,6 @@
     enemy.outlineArt = outline;
 
     enemy.setSize(isJackal ? 112 : 96, 104);
-    if (isJackal) this.startJackalBreathing(enemy, index);
 
     const markerArt = this.add.graphics();
     markerArt.fillStyle(0x07100c, 0.82); markerArt.fillCircle(0, 0, 10);
@@ -393,7 +376,6 @@
     if (isJackal) {
       ++enemy.jackalActionToken;
       enemy.jackalPoseUntil = Number.POSITIVE_INFINITY;
-      if (enemy.jackalBreathTween) enemy.jackalBreathTween.stop();
       this.tweens.killTweensOf(enemy.bodyArt);
       enemy.bodyArt.anims.stop();
       enemy.bodyArt
@@ -433,9 +415,8 @@
     ++enemy.jackalActionToken;
     enemy.jackalPoseUntil = 0;
     enemy.jackalState = '';
-    enemy.bodyArt.setFlipX(false);
+    enemy.bodyArt.setFlipX(false).setPosition(0, 5).setScale(1);
     this.setJackalState(enemy, 'idle');
-    this.startJackalBreathing(enemy, this.enemies.indexOf(enemy));
   };
 
   ForestScene.prototype.updateJackalPresence = function updateJackalPresence(time) {
