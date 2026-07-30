@@ -19,7 +19,8 @@
     ATTACK_ANTICIPATION: 3,
     ATTACK_IMPACT: 4,
     HURT: 5,
-    DEFEATED: 6
+    DEFEATED: 6,
+    IDLE_C: 7
   });
 
   const originalPreload = ForestScene.prototype.preload;
@@ -39,12 +40,14 @@
     if (!this.anims.exists('ps-jackal-idle')) {
       this.anims.create({
         key: 'ps-jackal-idle',
-        frames: this.anims.generateFrameNumbers(JACKAL_TEXTURE, {
-          frames: [JACKAL_FRAME.IDLE_A, JACKAL_FRAME.IDLE_B]
-        }),
-        frameRate: 0.8,
-        repeat: -1,
-        yoyo: true
+        frames: [
+          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_A, duration: 1199 },
+          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_B, duration: 119 },
+          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_C, duration: 159 },
+          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_B, duration: 119 }
+        ],
+        duration: 4,
+        repeat: -1
       });
     }
 
@@ -112,7 +115,7 @@
   const originalCreateEnvironment = ForestScene.prototype.createEnvironment;
   ForestScene.prototype.createEnvironment = function createReadableForestEnvironment() {
     originalCreateEnvironment.call(this);
-    const treeKeys = new Set(['ps-tree-cedar-a', 'ps-tree-cedar-b', 'ps-tree-olive']);
+    const treeKeys = new Set(['ps-tree-cedar-a', 'ps-tree-cedar-b', 'ps-tree-cedar-b', 'ps-tree-olive']);
     this.treeCanopies = this.children.list.filter(child => child.texture && treeKeys.has(child.texture.key));
     this.treeCanopies.forEach(tree => {
       tree.setData('normalAlpha', tree.alpha);
@@ -124,9 +127,12 @@
   ForestScene.prototype.setJackalState = function setJackalState(enemy, state) {
     if (!enemy || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
     const body = enemy.bodyArt;
+    const idleStartAt = enemy.jackalIdleStartAt || 0;
 
     if (enemy.jackalState === state) {
-      if (state === 'idle' && !body.anims.isPlaying) body.play('ps-jackal-idle');
+      if (state === 'idle' && !body.anims.isPlaying && this.time.now >= idleStartAt) {
+        body.play('ps-jackal-idle');
+      }
       return;
     }
 
@@ -135,7 +141,12 @@
     body.setAngle(0);
 
     if (state === 'idle') {
-      body.play('ps-jackal-idle', true);
+      if (this.time.now < idleStartAt) {
+        body.anims.stop();
+        body.setFrame(JACKAL_FRAME.IDLE_A);
+      } else {
+        body.play('ps-jackal-idle', true);
+      }
     } else {
       body.anims.stop();
       const frame = {
@@ -181,6 +192,8 @@
       enemy.addAt(enemy.bodyArt, bodyIndex);
       enemy.jackalActionToken = 0;
       enemy.jackalPoseUntil = 0;
+      enemy.jackalIdlePhaseOffset = (index % 2) * 180;
+      enemy.jackalIdleStartAt = this.time.now + enemy.jackalIdlePhaseOffset;
       enemy.jackalState = '';
 
       const hpBack = enemy.list[2];
@@ -422,6 +435,7 @@
     });
     ++enemy.jackalActionToken;
     enemy.jackalPoseUntil = 0;
+    enemy.jackalIdleStartAt = this.time.now + enemy.jackalIdlePhaseOffset;
     enemy.jackalState = '';
     enemy.bodyArt.setFlipX(false).setPosition(0, 5).setScale(1);
     this.setJackalState(enemy, 'idle');
