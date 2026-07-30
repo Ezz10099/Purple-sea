@@ -115,7 +115,7 @@
   const originalCreateEnvironment = ForestScene.prototype.createEnvironment;
   ForestScene.prototype.createEnvironment = function createReadableForestEnvironment() {
     originalCreateEnvironment.call(this);
-    const treeKeys = new Set(['ps-tree-cedar-a', 'ps-tree-cedar-b', 'ps-tree-cedar-b', 'ps-tree-olive']);
+    const treeKeys = new Set(['ps-tree-cedar-a', 'ps-tree-cedar-b', 'ps-tree-olive']);
     this.treeCanopies = this.children.list.filter(child => child.texture && treeKeys.has(child.texture.key));
     this.treeCanopies.forEach(tree => {
       tree.setData('normalAlpha', tree.alpha);
