@@ -28,7 +28,7 @@
     "frameHeight": 96,
     "margin": 0,
     "spacing": 0,
-    "sha256": "071bebf7243ef74e074eb928d12b9f76d7c37300b9e812f1f5dc96a3a5fc9d20"
+    "sha256": "ef6d9837321ed71297d59ee47e24e6117fbb0b83a9ccefe8a91386a3bc99dd82"
   },
   "frames": [
     {
@@ -42,7 +42,7 @@
       "index": 1,
       "state": "idle-b",
       "file": "frames/jackal-idle-b-right-00.png",
-      "sha256": "ba074c6c79a36a8a7c87d7b45f2d307398ab9482c64ca3e23dc1d9a5b118efbf"
+      "sha256": "aef242ebe886b49bf9ed6ef22139fa43fdd443a78ea86e07d08b29c548137fe1"
     },
     {
       "index": 2,
