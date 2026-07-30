@@ -20,15 +20,15 @@
   },
   "contactSheet": {
     "file": "jackal-contact-sheet.png",
-    "width": 672,
+    "width": 768,
     "height": 96,
-    "columns": 7,
+    "columns": 8,
     "rows": 1,
     "frameWidth": 96,
     "frameHeight": 96,
     "margin": 0,
     "spacing": 0,
-    "sha256": "ef6d9837321ed71297d59ee47e24e6117fbb0b83a9ccefe8a91386a3bc99dd82"
+    "sha256": "e8b4289f1d90eb2162b7028a0a127c25424fdf1390d1664fa6680e672659b5d2"
   },
   "frames": [
     {
@@ -42,7 +42,8 @@
       "index": 1,
       "state": "idle-b",
       "file": "frames/jackal-idle-b-right-00.png",
-      "sha256": "aef242ebe886b49bf9ed6ef22139fa43fdd443a78ea86e07d08b29c548137fe1"
+      "sha256": "602c7c82ac5c47322deaccc500fdb6d7a90659f520372a34796974de3b65fa6c",
+      "role": "halfway-inhale"
     },
     {
       "index": 2,
@@ -74,6 +75,13 @@
       "state": "defeated",
       "file": "frames/jackal-defeated-right-00.png",
       "sha256": "63b6193d590d6a1671f9c2f51b5383d10e0090787d6651406f0f29b431b57eac"
+    },
+    {
+      "index": 7,
+      "state": "idle-c",
+      "role": "inhale-peak",
+      "file": "frames/jackal-idle-c-right-00.png",
+      "sha256": "a575a320d9e9802a6d3e0b66c0e2f25524a7ccccbbcda4a089f79c77a3246774"
     }
   ],
   "phaser": {
@@ -89,11 +97,19 @@
       "idle": {
         "frames": [
           0,
-          1
+          1,
+          7,
+          1,
+          0
         ],
-        "frameRate": 1.6,
-        "repeat": -1,
-        "yoyo": true
+        "frameDurationsMs": [
+          1200,
+          120,
+          160,
+          120,
+          1200
+        ],
+        "repeat": -1
       },
       "alert": {
         "frames": [
@@ -121,5 +137,38 @@
         ]
       }
     }
+  },
+  "idleDirection": {
+    "status": "approved",
+    "name": "controlled-breathing",
+    "foundation": "frames/jackal-idle-a-right-00.png",
+    "sequence": [
+      {
+        "frame": 0,
+        "pose": "idle-a",
+        "holdMs": 1200
+      },
+      {
+        "frame": 1,
+        "pose": "idle-b",
+        "holdMs": 120
+      },
+      {
+        "frame": 7,
+        "pose": "idle-c",
+        "holdMs": 160
+      },
+      {
+        "frame": 1,
+        "pose": "idle-b",
+        "holdMs": 120
+      },
+      {
+        "frame": 0,
+        "pose": "idle-a",
+        "holdMs": 1200
+      }
+    ],
+    "repeat": -1
   }
 }
