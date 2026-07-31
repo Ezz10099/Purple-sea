@@ -14,11 +14,11 @@
   const JACKAL_ORIGIN_Y = 84 / 96;
   const JACKAL_FRAME = Object.freeze({
     IDLE_A: 0,
-    ALERT: 1,
-    ATTACK_ANTICIPATION: 2,
-    ATTACK_IMPACT: 3,
-    HURT: 4,
-    DEFEATED: 5
+    ALERT: 2,
+    ATTACK_ANTICIPATION: 3,
+    ATTACK_IMPACT: 4,
+    HURT: 5,
+    DEFEATED: 6
   });
 
   const originalPreload = ForestScene.prototype.preload;

@@ -20,15 +20,15 @@
   },
   "contactSheet": {
     "file": "jackal-contact-sheet.png",
-    "width": 576,
+    "width": 864,
     "height": 96,
-    "columns": 6,
+    "columns": 9,
     "rows": 1,
     "frameWidth": 96,
     "frameHeight": 96,
     "margin": 0,
     "spacing": 0,
-    "sha256": "8cd8f9d41cfd84bbc8be9ace35350b8bc0f113d34f6bd7b3d173330f838b6f1d"
+    "sha256": "cbca1df9e908a956b5b2961186413b99be2ea88d8d226cf995200966ed6713ca"
   },
   "frames": [
     {
@@ -40,34 +40,58 @@
     },
     {
       "index": 1,
+      "state": "idle-b",
+      "file": "frames/jackal-idle-b-right-00.png",
+      "sha256": "6443250d559d2d00abe5e0b8793012b45319b3a9fd586a22b7a0906c2e2269a1",
+      "role": "front-weight-shift",
+      "runtimeUsage": "unused"
+    },
+    {
+      "index": 2,
       "state": "alert",
       "file": "frames/jackal-alert-right-00.png",
       "sha256": "cd22b3d2969e1974e13b709fe2d3a717fff8d017f0dab616857b2f2dda068d99"
     },
     {
-      "index": 2,
+      "index": 3,
       "state": "attack-anticipation",
       "file": "frames/jackal-attack-anticipation-right-00.png",
       "sha256": "a80d8abcdae84812bd3ec504bf35f283b2804e112dc171cb349957777b7eaf40"
     },
     {
-      "index": 3,
+      "index": 4,
       "state": "attack-impact",
       "event": "impact",
       "file": "frames/jackal-attack-impact-right-00.png",
       "sha256": "217d36b138f1b5236be1b1514352a5845c74ff6a347dbae646ffda4788a54479"
     },
     {
-      "index": 4,
+      "index": 5,
       "state": "hurt",
       "file": "frames/jackal-hurt-right-00.png",
       "sha256": "2af325366031fba22056f548e39e31ad5d646b06ddf4b96274cc819998d4a895"
     },
     {
-      "index": 5,
+      "index": 6,
       "state": "defeated",
       "file": "frames/jackal-defeated-right-00.png",
       "sha256": "63b6193d590d6a1671f9c2f51b5383d10e0090787d6651406f0f29b431b57eac"
+    },
+    {
+      "index": 7,
+      "state": "idle-c",
+      "role": "balanced-middle",
+      "file": "frames/jackal-idle-c-right-00.png",
+      "sha256": "50acb8e682ae95eb80981612b0a74ca535ecc0b6a015ee0e1b69edcf82f565dc",
+      "runtimeUsage": "unused"
+    },
+    {
+      "index": 8,
+      "state": "idle-d",
+      "role": "rear-weight-shift",
+      "file": "frames/jackal-idle-d-right-00.png",
+      "sha256": "7ce8dc70596d16918552390e39967d7350cf94771edaf8ae0cf613e591d55ee7",
+      "runtimeUsage": "unused"
     }
   ],
   "phaser": {
@@ -81,27 +105,33 @@
     },
     "states": {
       "idle": {
+        "mode": "static",
         "frame": 0
       },
       "alert": {
-        "frame": 1
+        "frame": 2
       },
       "attack": {
         "frames": [
-          2,
-          3
+          3,
+          4
         ],
         "frameRate": 8,
         "repeat": 0,
-        "eventFrame": 3
+        "eventFrame": 4
       },
       "hurt": {
-        "frame": 4,
+        "frame": 5,
         "holdMs": 160
       },
       "defeated": {
-        "frame": 5
+        "frame": 6
       }
-    }
+    },
+    "unusedFrameIndices": [
+      1,
+      7,
+      8
+    ]
   }
 }
