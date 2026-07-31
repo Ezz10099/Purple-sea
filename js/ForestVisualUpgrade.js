@@ -20,7 +20,8 @@
     ATTACK_IMPACT: 4,
     HURT: 5,
     DEFEATED: 6,
-    IDLE_C: 7
+    IDLE_C: 7,
+    IDLE_D: 8
   });
 
   const originalPreload = ForestScene.prototype.preload;
@@ -40,13 +41,15 @@
     if (!this.anims.exists('ps-jackal-idle')) {
       this.anims.create({
         key: 'ps-jackal-idle',
-        frames: [
-          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_A, duration: 1199 },
-          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_B, duration: 119 },
-          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_C, duration: 159 },
-          { key: JACKAL_TEXTURE, frame: JACKAL_FRAME.IDLE_B, duration: 119 }
-        ],
-        duration: 4,
+        frames: this.anims.generateFrameNumbers(JACKAL_TEXTURE, {
+          frames: [
+            JACKAL_FRAME.IDLE_A,
+            JACKAL_FRAME.IDLE_B,
+            JACKAL_FRAME.IDLE_C,
+            JACKAL_FRAME.IDLE_D
+          ]
+        }),
+        frameRate: 5,
         repeat: -1
       });
     }
