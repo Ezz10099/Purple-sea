@@ -9,9 +9,48 @@
 
   if (typeof ForestScene === 'undefined') return;
 
+  const JACKAL_TEXTURE = 'ps-jackal-set';
+  const JACKAL_PATH = 'assets/enemies/jackal/jackal-contact-sheet.png';
+  const JACKAL_ORIGIN_Y = 84 / 96;
+  const JACKAL_FRAME = Object.freeze({
+    IDLE_A: 0,
+    ALERT: 2,
+    ATTACK_ANTICIPATION: 3,
+    ATTACK_IMPACT: 4,
+    HURT: 5,
+    DEFEATED: 6
+  });
+
+  const originalPreload = ForestScene.prototype.preload;
+  ForestScene.prototype.preload = function preloadForestAssets() {
+    if (originalPreload) originalPreload.call(this);
+    this.load.spritesheet(JACKAL_TEXTURE, JACKAL_PATH, {
+      frameWidth: 96,
+      frameHeight: 96,
+      margin: 0,
+      spacing: 0
+    });
+  };
+
+  ForestScene.prototype.prepareJackalAnimations = function prepareJackalAnimations() {
+    this.textures.get(JACKAL_TEXTURE).setFilter(Phaser.Textures.FilterMode.NEAREST);
+
+    if (!this.anims.exists('ps-jackal-attack')) {
+      this.anims.create({
+        key: 'ps-jackal-attack',
+        frames: this.anims.generateFrameNumbers(JACKAL_TEXTURE, {
+          frames: [JACKAL_FRAME.ATTACK_ANTICIPATION, JACKAL_FRAME.ATTACK_IMPACT]
+        }),
+        frameRate: 8,
+        repeat: 0
+      });
+    }
+  };
+
   const originalGenerateProceduralArt = ForestScene.prototype.generateProceduralArt;
   ForestScene.prototype.generateProceduralArt = function generateUpgradedForestArt() {
     originalGenerateProceduralArt.call(this);
+    this.prepareJackalAnimations();
 
     this.makeTexture('ps-rat-v2', 118, 84, g => {
       g.fillStyle(0x030806, 0.46); g.fillEllipse(62, 76, 82, 16);
@@ -33,26 +72,6 @@
       g.lineStyle(5, 0x2b211b, 1); g.lineBetween(39, 62, 35, 76); g.lineBetween(66, 62, 70, 76);
       g.lineStyle(2, 0xb49a75, 0.9); g.lineBetween(34, 76, 27, 78); g.lineBetween(69, 76, 77, 78);
       g.lineStyle(2, 0xd8c49a, 0.55); g.strokeEllipse(50, 46, 58, 32);
-    });
-
-    this.makeTexture('ps-jackal-v2', 142, 106, g => {
-      g.fillStyle(0x030806, 0.46); g.fillEllipse(74, 98, 104, 20);
-      g.lineStyle(13, 0x241a13, 1); g.beginPath(); g.moveTo(38, 58); g.lineTo(12, 40); g.lineTo(29, 69); g.strokePath();
-      g.lineStyle(7, 0x9d6a3d, 1); g.beginPath(); g.moveTo(39, 57); g.lineTo(15, 42); g.lineTo(31, 67); g.strokePath();
-
-      g.fillStyle(0x261a12); g.fillEllipse(66, 61, 82, 45); g.fillCircle(108, 48, 28);
-      g.fillStyle(0x9a6638); g.fillEllipse(64, 58, 76, 39); g.fillCircle(106, 47, 23);
-      g.fillStyle(0xc68a4f); g.fillEllipse(69, 48, 47, 19); g.fillTriangle(93, 30, 95, 4, 106, 31); g.fillTriangle(108, 29, 129, 7, 124, 38);
-      g.fillStyle(0x3c291d); g.fillTriangle(97, 27, 98, 12, 104, 29); g.fillTriangle(112, 27, 125, 13, 121, 34);
-      g.fillStyle(0xead0a0, 0.84); g.fillTriangle(103, 46, 135, 57, 105, 64); g.fillEllipse(99, 66, 24, 18);
-      g.fillStyle(0x17100c); g.fillCircle(116, 45, 3); g.fillCircle(135, 57, 4);
-      g.fillStyle(0xf1c15e); g.fillCircle(116, 44, 1.5);
-
-      g.fillStyle(0x2f2118); g.fillRoundedRect(43, 72, 9, 28, 4); g.fillRoundedRect(78, 72, 9, 28, 4);
-      g.fillStyle(0xb77b43); g.fillRoundedRect(46, 70, 5, 23, 3); g.fillRoundedRect(81, 70, 5, 23, 3);
-      g.fillStyle(0x19110d); g.fillRect(40, 96, 16, 5); g.fillRect(75, 96, 16, 5);
-      g.lineStyle(2, 0xe2bb78, 0.48); g.strokeEllipse(64, 58, 76, 39);
-      g.lineStyle(3, 0x4a2e1d, 0.9); g.lineBetween(88, 57, 105, 61);
     });
 
     this.makeTexture('ps-crawler-v2', 118, 112, g => {
@@ -89,15 +108,36 @@
     });
   };
 
+  ForestScene.prototype.setJackalState = function setJackalState(enemy, state) {
+    if (!enemy || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
+    if (enemy.jackalState === state) return;
+    const body = enemy.bodyArt;
+
+    body.anims.stop();
+    body.clearTint();
+    body.setX(0);
+    body.setAngle(0);
+
+    const frame = {
+      idle: JACKAL_FRAME.IDLE_A,
+      alert: JACKAL_FRAME.ALERT,
+      hurt: JACKAL_FRAME.HURT,
+      defeated: JACKAL_FRAME.DEFEATED
+    }[state];
+    if (frame !== undefined) body.setFrame(frame);
+
+    enemy.jackalState = state;
+  };
+
   ForestScene.prototype.createEnemies = function createReadableEnemies() {
     this.enemies = [];
     const defs = [
       { id: 'brush_rat_1', name: 'Brush Rat', level: 1, x: 360, y: 820, hp: 20, reward: 2, kind: 'rat', texture: 'ps-rat-v2' },
       { id: 'brush_rat_2', name: 'Brush Rat', level: 1, x: 535, y: 690, hp: 20, reward: 2, kind: 'rat', texture: 'ps-rat-v2' },
-      { id: 'young_jackal', name: 'Young Jackal', level: 2, x: 715, y: 575, hp: 29, reward: 3, kind: 'jackal', texture: 'ps-jackal-v2' },
+      { id: 'young_jackal', name: 'Young Jackal', level: 2, x: 715, y: 575, hp: 29, reward: 3, kind: 'jackal', texture: JACKAL_TEXTURE },
       { id: 'thorn_crawler', name: 'Thorn Crawler', level: 2, x: 750, y: 865, hp: 31, reward: 3, kind: 'crawler', texture: 'ps-crawler-v2' },
       { id: 'creek_rat', name: 'Creek Rat', level: 1, x: 960, y: 715, hp: 22, reward: 2, kind: 'rat', texture: 'ps-rat-v2' },
-      { id: 'rune_jackal', name: 'Rune Jackal', level: 3, x: 800, y: 365, hp: 40, reward: 5, kind: 'jackal', texture: 'ps-jackal-v2' }
+      { id: 'rune_jackal', name: 'Rune Jackal', level: 3, x: 800, y: 365, hp: 40, reward: 5, kind: 'jackal', texture: JACKAL_TEXTURE }
     ];
     defs.forEach((def, index) => this.spawnEnemy(def, index));
   };
@@ -108,18 +148,45 @@
     const enemy = this.enemies[this.enemies.length - 1];
     if (!enemy) return;
 
-    const scale = def.kind === 'jackal' ? 0.74 : def.kind === 'crawler' ? 0.78 : 0.82;
+    const isJackal = def.kind === 'jackal';
+    if (isJackal) {
+      const oldBody = enemy.bodyArt;
+      const bodyIndex = enemy.list.indexOf(oldBody);
+      this.tweens.killTweensOf(oldBody);
+      enemy.remove(oldBody, true);
+
+      enemy.bodyArt = this.add.sprite(0, 5, JACKAL_TEXTURE, JACKAL_FRAME.IDLE_A)
+        .setOrigin(0.5, JACKAL_ORIGIN_Y)
+        .setScale(1);
+      enemy.addAt(enemy.bodyArt, bodyIndex);
+      enemy.jackalActionToken = 0;
+      enemy.jackalPoseUntil = 0;
+      enemy.jackalState = '';
+
+      const hpBack = enemy.list[2];
+      const levelBadge = enemy.list[4];
+      hpBack.setY(-38);
+      enemy.hpFill.setY(-38);
+      levelBadge.setY(-92);
+      this.setJackalState(enemy, 'idle');
+    }
+
+    const scale = isJackal ? 1 : def.kind === 'crawler' ? 0.78 : 0.82;
     enemy.bodyArt.setScale(scale);
 
-    const outline = this.add.image(enemy.bodyArt.x, enemy.bodyArt.y, def.texture)
-      .setOrigin(enemy.bodyArt.originX, enemy.bodyArt.originY)
-      .setScale(scale * 1.08)
-      .setTintFill(0xf4ddb0)
-      .setAlpha(0.28);
-    enemy.addAt(outline, 1);
-    enemy.outlineArt = outline;
+    if (!isJackal) {
+      const outline = this.add.image(enemy.bodyArt.x, enemy.bodyArt.y, def.texture)
+        .setOrigin(enemy.bodyArt.originX, enemy.bodyArt.originY)
+        .setScale(scale * 1.08)
+        .setTintFill(0xf4ddb0)
+        .setAlpha(0.28);
+      enemy.addAt(outline, 1);
+      enemy.outlineArt = outline;
+    } else {
+      enemy.outlineArt = null;
+    }
 
-    enemy.setSize(def.kind === 'jackal' ? 112 : 96, 104);
+    enemy.setSize(isJackal ? 112 : 96, 104);
 
     const markerArt = this.add.graphics();
     markerArt.fillStyle(0x07100c, 0.82); markerArt.fillCircle(0, 0, 10);
@@ -139,6 +206,214 @@
       const selected = item === enemy;
       item.visibilityMarker.setScale(selected ? 1.24 : 1);
       item.visibilityMarker.setAlpha(selected ? 1 : 0.82);
+      if (item.def.kind === 'jackal' && item.alive && this.time.now >= item.jackalPoseUntil) {
+        this.setJackalState(item, 'idle');
+      }
+    });
+  };
+
+  ForestScene.prototype.playJackalHurt = function playJackalHurt(enemy, time) {
+    if (!enemy || enemy.def.kind !== 'jackal' || !enemy.alive) return;
+    const token = ++enemy.jackalActionToken;
+    const body = enemy.bodyArt;
+    const recoilX = body.flipX ? 5 : -5;
+    enemy.jackalPoseUntil = time + 190;
+    this.setJackalState(enemy, 'hurt');
+    body.setTintFill(0xffe7b5);
+    this.tweens.add({
+      targets: body,
+      x: { from: 0, to: recoilX },
+      angle: { from: 0, to: body.flipX ? -4 : 4 },
+      duration: 70,
+      yoyo: true,
+      ease: 'Quad.Out',
+      onComplete: () => {
+        if (enemy.jackalActionToken !== token) return;
+        body.clearTint().setX(0).setAngle(0);
+      }
+    });
+  };
+
+  ForestScene.prototype.showJackalImpact = function showJackalImpact(enemy) {
+    if (!enemy || !enemy.bodyArt) return;
+    const direction = enemy.bodyArt.flipX ? -1 : 1;
+    const x = enemy.x + direction * 38;
+    const y = enemy.y - 22;
+    const dust = this.add.graphics().setDepth(enemy.y + 130);
+    dust.fillStyle(0xd8bc78, 0.70);
+    dust.fillCircle(x, y + 9, 4);
+    dust.fillCircle(x - direction * 8, y + 14, 3);
+    dust.fillCircle(x + direction * 7, y + 13, 2);
+    dust.lineStyle(3, 0xffe29a, 0.82);
+    dust.lineBetween(x - direction * 7, y - 4, x + direction * 11, y + 5);
+    this.tweens.add({
+      targets: dust,
+      alpha: 0,
+      scaleX: 1.45,
+      scaleY: 1.45,
+      duration: 210,
+      ease: 'Quad.Out',
+      onComplete: () => dust.destroy()
+    });
+    this.cameras.main.shake(55, 0.0012);
+  };
+
+  ForestScene.prototype.playJackalAttack = function playJackalAttack(enemy, time, onImpact) {
+    if (!enemy || enemy.def.kind !== 'jackal' || !enemy.alive) return;
+    const token = ++enemy.jackalActionToken;
+    const body = enemy.bodyArt;
+    const startDelay = 95;
+    enemy.jackalPoseUntil = time + 420;
+
+    this.time.delayedCall(startDelay, () => {
+      if (!enemy.alive || enemy.jackalActionToken !== token) return;
+      const target = this.player;
+      const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, target.x, target.y);
+      const originX = enemy.x;
+      const originY = enemy.y;
+      body.clearTint().setX(0).setAngle(0).setFlipX(target.x < enemy.x);
+      body.play('ps-jackal-attack', true);
+      enemy.jackalState = 'attack';
+
+      this.tweens.add({
+        targets: enemy,
+        x: originX + Math.cos(angle) * 18,
+        y: originY + Math.sin(angle) * 11,
+        duration: 125,
+        yoyo: true,
+        ease: 'Quad.In',
+        onComplete: () => {
+          if (enemy.jackalActionToken === token && enemy.alive) {
+            enemy.setPosition(originX, originY);
+          }
+        }
+      });
+
+      this.time.delayedCall(125, () => {
+        if (!enemy.alive || enemy.jackalActionToken !== token) return;
+        this.showJackalImpact(enemy);
+        onImpact();
+      });
+    });
+  };
+
+  const originalAttackEnemy = ForestScene.prototype.attackEnemy;
+  ForestScene.prototype.attackEnemy = function attackAnimatedEnemy(enemy, time) {
+    if (enemy.def.kind !== 'jackal') {
+      originalAttackEnemy.call(this, enemy, time);
+      return;
+    }
+    if (!enemy.alive || time < this.attackTimer) return;
+
+    this.attackTimer = time + 530;
+    const damage = Phaser.Math.Between(7, 11);
+    enemy.hp -= damage;
+    this.redrawEnemyHP(enemy);
+
+    const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, enemy.x, enemy.y);
+    const originX = this.player.x;
+    const originY = this.player.y;
+    this.tweens.add({
+      targets: this.player,
+      x: originX + Math.cos(angle) * 14,
+      y: originY + Math.sin(angle) * 9,
+      duration: 90,
+      yoyo: true,
+      ease: 'Quad.Out'
+    });
+    this.showStrike(enemy.x, enemy.y, 0xf1d785);
+    this.floatText(enemy.x, enemy.y - 62, `-${damage}`, '#ffe0a0');
+    this.playJackalHurt(enemy, time);
+
+    if (enemy.hp <= 0) {
+      this.defeatEnemy(enemy, time);
+      return;
+    }
+
+    if (time >= enemy.nextAttackAt) {
+      enemy.nextAttackAt = time + 900;
+      const retaliation = Phaser.Math.Between(2, 5);
+      this.playJackalAttack(enemy, time, () => {
+        this.playerHP = Math.max(0, this.playerHP - retaliation);
+        this.showStrike(this.player.x, this.player.y, 0xc65d44);
+        this.floatText(this.player.x, this.player.y - 56, `-${retaliation}`, '#ffad91');
+        this.tweens.add({
+          targets: this.player.bodyArt,
+          angle: enemy.x > this.player.x ? -6 : 6,
+          duration: 75,
+          yoyo: true
+        });
+        if (this.playerHP <= 0) this.playerDefeated();
+        this.updateHUD();
+      });
+    }
+    this.updateHUD();
+  };
+
+  const originalDefeatEnemy = ForestScene.prototype.defeatEnemy;
+  ForestScene.prototype.defeatEnemy = function defeatAnimatedEnemy(enemy, time) {
+    const isJackal = enemy.def.kind === 'jackal';
+    if (isJackal) {
+      ++enemy.jackalActionToken;
+      enemy.jackalPoseUntil = Number.POSITIVE_INFINITY;
+      this.tweens.killTweensOf(enemy.bodyArt);
+      enemy.bodyArt.anims.stop();
+      enemy.bodyArt
+        .clearTint()
+        .setFrame(JACKAL_FRAME.DEFEATED)
+        .setPosition(0, 5)
+        .setScale(1)
+        .setAngle(0)
+        .setAlpha(1);
+      enemy.jackalState = 'defeated';
+    }
+
+    originalDefeatEnemy.call(this, enemy, time);
+
+    if (isJackal) {
+      this.tweens.killTweensOf(enemy);
+      enemy.setPosition(enemy.homeX, enemy.homeY).setScale(1).setAlpha(1);
+      this.time.delayedCall(260, () => {
+        if (enemy.alive) return;
+        this.tweens.add({
+          targets: enemy,
+          scaleX: 0.88,
+          scaleY: 0.88,
+          y: enemy.homeY + 4,
+          duration: 360,
+          ease: 'Quad.In'
+        });
+      });
+    }
+  };
+
+  const originalRespawnEnemy = ForestScene.prototype.respawnEnemy;
+  ForestScene.prototype.respawnEnemy = function respawnAnimatedEnemy(enemy) {
+    originalRespawnEnemy.call(this, enemy);
+    if (enemy.def.kind !== 'jackal') return;
+    this.tweens.killTweensOf(enemy);
+    enemy.setAlpha(1);
+    this.tweens.add({
+      targets: enemy,
+      scaleX: { from: 0.75, to: 1 },
+      scaleY: { from: 0.75, to: 1 },
+      duration: 420,
+      ease: 'Back.Out'
+    });
+    ++enemy.jackalActionToken;
+    enemy.jackalPoseUntil = 0;
+    enemy.jackalState = '';
+    enemy.bodyArt.setFlipX(false).setPosition(0, 5).setScale(1);
+    this.setJackalState(enemy, 'idle');
+  };
+
+  ForestScene.prototype.updateJackalPresence = function updateJackalPresence(time) {
+    if (!this.player) return;
+    (this.enemies || []).forEach(enemy => {
+      if (!enemy.alive || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
+      enemy.bodyArt.setFlipX(this.player.x < enemy.x);
+      if (time < enemy.jackalPoseUntil) return;
+      this.setJackalState(enemy, 'idle');
     });
   };
 
@@ -166,6 +441,12 @@
       if (enemy.outlineArt && enemy.bodyArt) {
         enemy.outlineArt.setPosition(enemy.bodyArt.x, enemy.bodyArt.y);
         enemy.outlineArt.setRotation(enemy.bodyArt.rotation);
+        if (enemy.def.kind === 'jackal') {
+          enemy.outlineArt
+            .setFrame(enemy.bodyArt.frame.name)
+            .setFlipX(enemy.bodyArt.flipX)
+            .setScale(enemy.bodyArt.scaleX * 1.06, enemy.bodyArt.scaleY * 1.06);
+        }
       }
       enemy.visibilityMarker.setPosition(enemy.x, enemy.y - (enemy.def.kind === 'jackal' ? 92 : 82));
       enemy.visibilityMarker.setVisible(enemy.alive && enemy.alpha > 0.08);
@@ -176,6 +457,7 @@
   const originalUpdate = ForestScene.prototype.update;
   ForestScene.prototype.update = function updateReadableForest(time, delta) {
     originalUpdate.call(this, time, delta);
+    this.updateJackalPresence(time);
     this.updateTreeOcclusion();
     this.updateEnemyMarkers();
   };
