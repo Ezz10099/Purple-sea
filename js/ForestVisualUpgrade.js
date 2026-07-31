@@ -14,14 +14,11 @@
   const JACKAL_ORIGIN_Y = 84 / 96;
   const JACKAL_FRAME = Object.freeze({
     IDLE_A: 0,
-    IDLE_B: 1,
-    ALERT: 2,
-    ATTACK_ANTICIPATION: 3,
-    ATTACK_IMPACT: 4,
-    HURT: 5,
-    DEFEATED: 6,
-    IDLE_C: 7,
-    IDLE_D: 8
+    ALERT: 1,
+    ATTACK_ANTICIPATION: 2,
+    ATTACK_IMPACT: 3,
+    HURT: 4,
+    DEFEATED: 5
   });
 
   const originalPreload = ForestScene.prototype.preload;
@@ -37,22 +34,6 @@
 
   ForestScene.prototype.prepareJackalAnimations = function prepareJackalAnimations() {
     this.textures.get(JACKAL_TEXTURE).setFilter(Phaser.Textures.FilterMode.NEAREST);
-
-    if (!this.anims.exists('ps-jackal-idle')) {
-      this.anims.create({
-        key: 'ps-jackal-idle',
-        frames: this.anims.generateFrameNumbers(JACKAL_TEXTURE, {
-          frames: [
-            JACKAL_FRAME.IDLE_A,
-            JACKAL_FRAME.IDLE_B,
-            JACKAL_FRAME.IDLE_C,
-            JACKAL_FRAME.IDLE_D
-          ]
-        }),
-        frameRate: 5,
-        repeat: -1
-      });
-    }
 
     if (!this.anims.exists('ps-jackal-attack')) {
       this.anims.create({
@@ -129,36 +110,21 @@
 
   ForestScene.prototype.setJackalState = function setJackalState(enemy, state) {
     if (!enemy || enemy.def.kind !== 'jackal' || !enemy.bodyArt) return;
+    if (enemy.jackalState === state) return;
     const body = enemy.bodyArt;
-    const idleStartAt = enemy.jackalIdleStartAt || 0;
 
-    if (enemy.jackalState === state) {
-      if (state === 'idle' && !body.anims.isPlaying && this.time.now >= idleStartAt) {
-        body.play('ps-jackal-idle');
-      }
-      return;
-    }
-
+    body.anims.stop();
     body.clearTint();
     body.setX(0);
     body.setAngle(0);
 
-    if (state === 'idle') {
-      if (this.time.now < idleStartAt) {
-        body.anims.stop();
-        body.setFrame(JACKAL_FRAME.IDLE_A);
-      } else {
-        body.play('ps-jackal-idle', true);
-      }
-    } else {
-      body.anims.stop();
-      const frame = {
-        alert: JACKAL_FRAME.ALERT,
-        hurt: JACKAL_FRAME.HURT,
-        defeated: JACKAL_FRAME.DEFEATED
-      }[state];
-      if (frame !== undefined) body.setFrame(frame);
-    }
+    const frame = {
+      idle: JACKAL_FRAME.IDLE_A,
+      alert: JACKAL_FRAME.ALERT,
+      hurt: JACKAL_FRAME.HURT,
+      defeated: JACKAL_FRAME.DEFEATED
+    }[state];
+    if (frame !== undefined) body.setFrame(frame);
 
     enemy.jackalState = state;
   };
@@ -195,8 +161,6 @@
       enemy.addAt(enemy.bodyArt, bodyIndex);
       enemy.jackalActionToken = 0;
       enemy.jackalPoseUntil = 0;
-      enemy.jackalIdlePhaseOffset = (index % 2) * 180;
-      enemy.jackalIdleStartAt = this.time.now + enemy.jackalIdlePhaseOffset;
       enemy.jackalState = '';
 
       const hpBack = enemy.list[2];
@@ -438,7 +402,6 @@
     });
     ++enemy.jackalActionToken;
     enemy.jackalPoseUntil = 0;
-    enemy.jackalIdleStartAt = this.time.now + enemy.jackalIdlePhaseOffset;
     enemy.jackalState = '';
     enemy.bodyArt.setFlipX(false).setPosition(0, 5).setScale(1);
     this.setJackalState(enemy, 'idle');
